@@ -1,22 +1,36 @@
 package jp.techacademy.hide.yui.qa_app
 
+import android.content.Intent  // ← 追加
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.google.firebase.auth.FirebaseAuth  // ← 追加
+// findViewById()を呼び出さずに該当Viewを取得するために必要となるインポート宣言
+import kotlinx.android.synthetic.main.activity_main.*  // ← 追加
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        // ～～ ここから
+        // idがtoolbarがインポート宣言により取得されているので
+        // id名でActionBarのサポートを依頼
+        setSupportActionBar(toolbar)
+
+        // fabにClickリスナーを登録
+        fab.setOnClickListener { _ ->
+            // ログイン済みのユーザーを取得する
+            val user = FirebaseAuth.getInstance().currentUser
+
+            // ログインしていなければログイン画面に遷移させる
+            if (user == null) {
+                val intent = Intent(applicationContext, LoginActivity::class.java)
+                startActivity(intent)
+            }
+            // ～～ ここまで
         }
     }
 
